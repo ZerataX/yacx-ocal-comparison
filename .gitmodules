@@ -1,0 +1,6 @@
+[submodule "lib/yacx"]
+	path = lib/yacx
+	url = git@github.com:ZerataX/yacx.git
+[submodule "lib/ocal"]
+	path = lib/ocal
+	url = git@gitlab.com:mdh-project/libraries/ocal.git

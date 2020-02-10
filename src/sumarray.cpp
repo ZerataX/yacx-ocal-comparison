@@ -77,7 +77,7 @@ void ocalSumarray() {
   ocal::buffer<float> out(nBytes);
   auto inA_ptr = inA.get_host_memory_ptr();
   auto inB_ptr = inB.get_host_memory_ptr();
-  auto out_ptr = inB.get_host_memory_ptr();
+  auto out_ptr = out.get_host_memory_ptr();
   for (int i = 0; i < inAdata.size(); ++i) inA_ptr[i] = inAdata.at(i);
   for (int i = 0; i < inBdata.size(); ++i) inA_ptr[i] = inBdata.at(i);
 

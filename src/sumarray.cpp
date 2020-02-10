@@ -79,7 +79,7 @@ void ocalSumarray() {
   auto inB_ptr = inB.get_host_memory_ptr();
   auto out_ptr = out.get_host_memory_ptr();
   for (int i = 0; i < inAdata.size(); ++i) inA_ptr[i] = inAdata.at(i);
-  for (int i = 0; i < inBdata.size(); ++i) inA_ptr[i] = inBdata.at(i);
+  for (int i = 0; i < inBdata.size(); ++i) inB_ptr[i] = inBdata.at(i);
 
   int max_block;
   device.information(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, &max_block);

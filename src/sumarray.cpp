@@ -90,9 +90,6 @@ void ocalSumarray() {
   for (int i = 0; i < inAdata.size(); ++i) inA_ptr[i] = inAdata.at(i);
   for (int i = 0; i < inBdata.size(); ++i) inB_ptr[i] = inBdata.at(i);
 
-  int max_block;
-  device.information(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, &max_block);
-
   device(sumarray)(dim3(max_block), dim3(1))(read(inA), read(inB), write(out),
                                              nElements);
   for (int i = 0; i < out.size(); i++) std::cout << out_ptr[i] << ' ';

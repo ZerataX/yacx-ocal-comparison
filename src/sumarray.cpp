@@ -60,9 +60,8 @@ struct RandomGenerator {
 void ocalSumarray() {
   ocal::device<CUDA> device(0);
 
-  int minor, major,
-      max_block device.information(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X,
-                                   &max_block);
+  int minor, major, max_block;
+  device.information(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, &max_block);
   device.information(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, &major);
   device.information(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, &minor);
 

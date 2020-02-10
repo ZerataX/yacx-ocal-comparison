@@ -60,9 +60,18 @@ struct RandomGenerator {
 void ocalSumarray() {
   ocal::device<CUDA> device(0);
 
-  ocal::kernel sumarray = ocal::kernel(
-      cuda::source(cudasource),
-      std::vector<std::string>{"--gpu-architecture=35", "--fmad=false"});
+  int minor, major,
+      max_block device.information(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X,
+                                   &max_block);
+  device.information(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, &major);
+  device.information(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, &minor);
+
+  ocal::kernel sumarray =
+      ocal::kernel(cuda::source(cudasource),
+                   std::vector<std::string>{std::string("--gpu-architecture=") +
+                                                std::to_string(major) +
+                                                std::to_string(minor),
+                                            "--fmad=false"});
 
   std::vector<float> inAdata, inBdata, outdata;
   inAdata.resize(nElements);

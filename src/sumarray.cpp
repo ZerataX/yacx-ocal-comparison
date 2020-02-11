@@ -20,42 +20,35 @@ const std::string cudasource =
 const size_t nElements = 1024;
 const size_t nBytes = nElements * sizeof(int);
 
-struct RandomGenerator {
-  int maxValue;
-  RandomGenerator(int max) : maxValue(max) {}
-
-  int operator()() { return static_cast<int>(rand() % maxValue); }
-};
-
-void yacxSumarray() {
-  Device dev;
-  Source source{cudasource};
-  std::vector<int> inA, inB, out;
-  inA.resize(nElements);
-  inB.resize(nElements);
-  out.resize(out);
-
-  std::generate(inA.begin(), inA.end(), RandomGenerator(100));
-  std::generate(inB.begin(), inA.end(), RandomGenerator(100));
-
-  std::vector<KernelArg> args;
-  args.emplace_back(KernelArg{inA.data(), nBytes, false});
-  args.emplace_back(KernelArg{inB.data(), nBytes, false});
-  args.emplace_back(KernelArg{out.data(), nBytes, true});
-  args.emplace_back(KernelArg{nElements});
-
-  Options options{yacx::options::GpuArchitecture(device),
-                  yacx::options::FMAD(false)};
-
-  dim3 block(dev.max_block_dim);  // dim3 block(nElements);
-  dim3 grid(1);
-  source.program("sumArrayOnGPU")
-        .compile(options)
-        .configure(block, grid)
-        .launch(args);
-
-  for (int i = 0; i < out.size(); i++) std::cout << out.at(i) << ' ';
-}
+// void yacxSumarray() {
+//   Device dev;
+//   Source source{cudasource};
+//   std::vector<int> inA, inB, out;
+//   inA.resize(nElements);
+//   inB.resize(nElements);
+//   out.resize(out);
+//
+//   std::generate(inA.begin(), inA.end(), RandomGenerator(100));
+//   std::generate(inB.begin(), inA.end(), RandomGenerator(100));
+//
+//   std::vector<KernelArg> args;
+//   args.emplace_back(KernelArg{inA.data(), nBytes, false});
+//   args.emplace_back(KernelArg{inB.data(), nBytes, false});
+//   args.emplace_back(KernelArg{out.data(), nBytes, true});
+//   args.emplace_back(KernelArg{nElements});
+//
+//   Options options{yacx::options::GpuArchitecture(device),
+//                   yacx::options::FMAD(false)};
+//
+//   dim3 block(dev.max_block_dim);  // dim3 block(nElements);
+//   dim3 grid(1);
+//   source.program("sumArrayOnGPU")
+//         .compile(options)
+//         .configure(block, grid)
+//         .launch(args);
+//
+//   for (int i = 0; i < out.size(); i++) std::cout << out.at(i) << ' ';
+// }
 
 void ocalSumarray() {
   ocal::device<CUDA> device(0);
@@ -67,7 +60,7 @@ void ocalSumarray() {
 
   ocal::kernel sumarray =
       ocal::kernel(cuda::source(cudasource),
-                   std::vector<std::string>{std::string("--gpu-architecture=") +
+                   std::vector<std::string>{std::string("--gpu-architecture=compute_") +
                                                 std::to_string(major) +
                                                 std::to_string(minor),
                                             "--fmad=false"});
@@ -77,8 +70,10 @@ void ocalSumarray() {
   inBdata.resize(nElements);
   outdata.resize(nElements);
 
-  std::generate(inAdata.begin(), inAdata.end(), RandomGenerator(100));
-  std::generate(inBdata.begin(), inAdata.end(), RandomGenerator(100));
+  std::generate(inAdata.begin(), inAdata.end(), std::rand);
+  std::generate(inBdata.begin(), inBdata.end(), std::rand);
+
+  std::cout << inAdata.at(512);
 
   ocal::buffer<int> inA(nBytes);
   ocal::buffer<int> inB(nBytes);

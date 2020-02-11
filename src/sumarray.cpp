@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "../lib/ocal/ocal_cuda.hpp"
-// #include "../lib/yacx/include/yacx/main.hpp"
+#include "../lib/yacx/include/yacx/main.hpp"
 
 const std::string cudasource = R"(
     extern "C" __global__ void sumArrayOnGPU (int *A , int *B , int *C , int size) {
@@ -111,5 +111,5 @@ void ocalSumarray() {
 
 int main() {
   ocalSumarray();
-  // yacxSumarray();
+  yacxSumarray();
 }

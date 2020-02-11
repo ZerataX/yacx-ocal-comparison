@@ -102,6 +102,7 @@ void ocalSumarray() {
   auto out_ptr = out.get_host_memory_ptr();
   for (int i = 0; i < out.size(); i++) std::cout << out_ptr[i] << ' ';
   std::cout << std::endl;
+ 
   // on host
   std::transform(inAdata.begin(), inAdata.end(), inBdata.begin(),
                  inAdata.begin(), std::plus<int>());

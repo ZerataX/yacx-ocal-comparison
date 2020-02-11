@@ -28,8 +28,8 @@ const size_t nBytes = nElements * sizeof(int);
 //   inB.resize(nElements);
 //   out.resize(out);
 //
-//   std::generate(inA.begin(), inA.end(), RandomGenerator(100));
-//   std::generate(inB.begin(), inA.end(), RandomGenerator(100));
+//   std::generate(inA.begin(), inA.end(), std::rand);
+//   std::generate(inB.begin(), inB.end(), std::rand);
 //
 //   std::vector<KernelArg> args;
 //   args.emplace_back(KernelArg{inA.data(), nBytes, false});

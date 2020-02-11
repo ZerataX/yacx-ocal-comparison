@@ -8,7 +8,7 @@
 // #include "../lib/yacx/include/yacx/main.hpp"
 
 const std::string cudasource =
-    "extern C global void sumArrayOnGPU (float *A , float *B , float * C , int "
+    "extern C global void sumArrayOnGPU (int *A , int *B , int * C , int "
     "* size ) {\n"
     "   int i_inBlock = threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * "
     "blockDim.y * blockDim.x;\n"
@@ -18,44 +18,44 @@ const std::string cudasource =
     "      C [ i ]= A [ i ]+ B [ i ];\n"
     "}";
 const size_t nElements = 1024;
-const size_t nBytes = nElements * sizeof(float);
+const size_t nBytes = nElements * sizeof(int);
 
 struct RandomGenerator {
   int maxValue;
   RandomGenerator(int max) : maxValue(max) {}
 
-  float operator()() { return static_cast<float>(rand() % maxValue); }
+  int operator()() { return static_cast<int>(rand() % maxValue); }
 };
 
-// void yacxSumarray() {
-//   Device dev;
-//   Source source{cudasource};
-//   std::vector<float> inA, inB, out;
-//   inA.resize(nElements);
-//   inB.resize(nElements);
-//   out.resize(out);
-//
-//   std::generate(inA.begin(), inA.end(), RandomGenerator(100));
-//   std::generate(inB.begin(), inA.end(), RandomGenerator(100));
-//
-//   std::vector<KernelArg> args;
-//   args.emplace_back(KernelArg{inA.data(), nBytes, false});
-//   args.emplace_back(KernelArg{inB.data(), nBytes, false});
-//   args.emplace_back(KernelArg{out.data(), nBytes, true});
-//   args.emplace_back(KernelArg{nElements});
-//
-//   Options options{yacx::options::GpuArchitecture(device),
-//                   yacx::options::FMAD(false)};
-//
-//   dim3 block(dev.max_block_dim);  // dim3 block(nElements);
-//   dim3 grid(1);
-//   source.program("sumArrayOnGPU")
-//         .compile(options)
-//         .configure(block, grid)
-//         .launch(args);
-//
-//   for (int i = 0; i < out.size(); i++) std::cout << out.at(i) << ' ';
-// }
+void yacxSumarray() {
+  Device dev;
+  Source source{cudasource};
+  std::vector<int> inA, inB, out;
+  inA.resize(nElements);
+  inB.resize(nElements);
+  out.resize(out);
+
+  std::generate(inA.begin(), inA.end(), RandomGenerator(100));
+  std::generate(inB.begin(), inA.end(), RandomGenerator(100));
+
+  std::vector<KernelArg> args;
+  args.emplace_back(KernelArg{inA.data(), nBytes, false});
+  args.emplace_back(KernelArg{inB.data(), nBytes, false});
+  args.emplace_back(KernelArg{out.data(), nBytes, true});
+  args.emplace_back(KernelArg{nElements});
+
+  Options options{yacx::options::GpuArchitecture(device),
+                  yacx::options::FMAD(false)};
+
+  dim3 block(dev.max_block_dim);  // dim3 block(nElements);
+  dim3 grid(1);
+  source.program("sumArrayOnGPU")
+        .compile(options)
+        .configure(block, grid)
+        .launch(args);
+
+  for (int i = 0; i < out.size(); i++) std::cout << out.at(i) << ' ';
+}
 
 void ocalSumarray() {
   ocal::device<CUDA> device(0);
@@ -72,7 +72,7 @@ void ocalSumarray() {
                                                 std::to_string(minor),
                                             "--fmad=false"});
 
-  std::vector<float> inAdata, inBdata, outdata;
+  std::vector<int> inAdata, inBdata, outdata;
   inAdata.resize(nElements);
   inBdata.resize(nElements);
   outdata.resize(nElements);
@@ -80,9 +80,9 @@ void ocalSumarray() {
   std::generate(inAdata.begin(), inAdata.end(), RandomGenerator(100));
   std::generate(inBdata.begin(), inAdata.end(), RandomGenerator(100));
 
-  ocal::buffer<float> inA(nBytes);
-  ocal::buffer<float> inB(nBytes);
-  ocal::buffer<float> out(nBytes);
+  ocal::buffer<int> inA(nBytes);
+  ocal::buffer<int> inB(nBytes);
+  ocal::buffer<int> out(nBytes);
   auto inA_ptr = inA.get_host_memory_ptr();
   auto inB_ptr = inB.get_host_memory_ptr();
   auto out_ptr = out.get_host_memory_ptr();

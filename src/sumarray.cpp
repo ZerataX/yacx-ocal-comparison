@@ -26,8 +26,11 @@ struct RandomGenerator {
 };
 
 void yacxSumarray() {
-  Device device("Tesla K20c");
+  Device device; // Device device("Tesla K20c");
   Source source{cudasource};
+
+  // int max_block = device.attribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR)
+
   Options options{yacx::options::GpuArchitecture(device),
                   yacx::options::FMAD(false)};
 
@@ -35,6 +38,7 @@ void yacxSumarray() {
   inA.resize(nElements);
   inB.resize(nElements);
   out.resize(nElements);
+
 
   std::generate(inA.begin(), inA.end(), RandomGenerator(100));
   std::generate(inB.begin(), inB.end(), RandomGenerator(100));
@@ -88,9 +92,10 @@ void ocalSumarray() {
   ocal::buffer<int> inA(nElements);
   ocal::buffer<int> inB(nElements);
   ocal::buffer<int> out(nElements);
-  std::generate(inB.begin(), inB.end(), RandomGenerator(100));
+  // std::generate(inB.begin(), inB.end(), RandomGenerator(100));
   auto inA_ptr = inA.get_host_memory_ptr();
   auto inB_ptr = inB.get_host_memory_ptr();
+  // auto out_ptr = out.get_host_memory_ptr();
   for (int i = 0; i < inA.size(); ++i) {
     inA_ptr[i] = inAdata.at(i);
     inB_ptr[i] = inBdata.at(i);
